@@ -1,5 +1,6 @@
 package com.aleksandr.aleksandrov.project.test.android.locatr;
 
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
@@ -64,13 +65,13 @@ public class FlickerFetchr {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public List<GalleryItem> fetchRecentPhotos() {
-        String url = buildUrl(FETCH_RECENTS_METHOD, null);
-        return downloadGalleryItems(url);
-    }
+//    public List<GalleryItem> fetchRecentPhotos() {
+//        String url = buildUrl(FETCH_RECENTS_METHOD, null);
+//        return downloadGalleryItems(url);
+//    }
 
-    public List<GalleryItem> searchPhotos(String query) {
-        String url = buildUrl(SEARCH_METHOD, query);
+    public List<GalleryItem> searchPhotos(Location location) {
+        String url = buildUrl(location);
         return downloadGalleryItems(url);
     }
 
@@ -89,13 +90,12 @@ public class FlickerFetchr {
         return items;
     }
 
-    private String buildUrl(String method, String query) {
-        Uri.Builder uriBuilder = ENDPOINT.buildUpon()
-                .appendQueryParameter("method", method);
-        if (method.equals(SEARCH_METHOD))
-            uriBuilder.appendQueryParameter("text", query);
-
-        return uriBuilder.build().toString();
+    private String buildUrl(Location location) {
+        return ENDPOINT.buildUpon()
+                .appendQueryParameter("method", SEARCH_METHOD)
+                .appendQueryParameter("lat", "" + location.getLatitude())
+                .appendQueryParameter("lon", "" + location.getLongitude())
+                .build().toString();
     }
 
     private void parseItemsGson(List<GalleryItem> items, JSONObject jsonBody) throws IOException, JSONException {
