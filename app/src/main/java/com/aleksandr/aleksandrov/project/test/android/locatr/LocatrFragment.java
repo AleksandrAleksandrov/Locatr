@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,10 +33,8 @@ import static android.view.View.VISIBLE;
  * Created by aleksandr on 10/29/17.
  */
 
-public class LocatrFragment extends Fragment {
+public class LocatrFragment extends SupportMapFragment {
     private static final String TAG = "LocatrFragment";
-    private ImageView mImageView;
-    private ProgressBar mProgressBar;
     private GoogleApiClient mClient;
 
     public static LocatrFragment newInstance() {
@@ -52,7 +51,6 @@ public class LocatrFragment extends Fragment {
                     @Override
                     public void onLocationChanged(Location location) {
                         Log.i(TAG, "Got a fix: " + location);
-                        mProgressBar.setVisibility(VISIBLE);
                         new SearchTask().execute(location);
                     }
                 });
@@ -84,8 +82,6 @@ public class LocatrFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mProgressBar.setVisibility(GONE);
-            mImageView.setImageBitmap(mBitmap);
         }
     }
 
@@ -108,17 +104,6 @@ public class LocatrFragment extends Fragment {
                     }
                 })
                 .build();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_locatr, container, false);
-
-        mImageView = view.findViewById(R.id.image);
-        mProgressBar = view.findViewById(R.id.progress_bar);
-
-        return view;
     }
 
     @Override
